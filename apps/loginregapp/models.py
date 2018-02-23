@@ -28,15 +28,15 @@ class usermanager(models.Manager):
 
     def loginvalidation(self,postData):
         loginerrors={}
-        if user.objects.filter(email=postData['loginemail']):
-            currentuser=user.objects.filter(email=postData['loginemail'])[0]
+        if user.objects.filter(email=postData['email']):
+            currentuser=user.objects.filter(email=postData['email'])[0]
             hashed_pw=currentuser.password
-            if bcrypt.checkpw(postData['loginpassword'].encode(), hashed_pw.encode()) == True:
+            if bcrypt.checkpw(postData['password'].encode(), hashed_pw.encode()) == True:
                 pass
             else:
-                loginerrors['loginpassword']= "Wrong email or password"
+                loginerrors['password']= "Wrong email or password"
         else:
-            loginerrors['loginemail']= "Wrong email or password"
+            loginerrors['email']= "Wrong email or password"
         return loginerrors
                 
 

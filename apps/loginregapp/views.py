@@ -20,6 +20,8 @@ def register(request):
         else:
             bcryptpassword = bcrypt.hashpw(request.POST['password'].encode(), bcrypt.gensalt())
             user.objects.create(first_name=request.POST['first_name'],last_name=request.POST['last_name'],email=request.POST['email'],password=bcryptpassword)
+            currentuser=user.objects.get(email=request.POST['email'])
+            request.session['currentuser']=currentuser
             return redirect('/success')
     else:
         return redirect('/')
@@ -30,14 +32,21 @@ def login(request):
             messages.error(request,error,extra_tags=login)
             return redirect('/')
     else:
-        currentuser=user.objects.filter(email=request.POST['loginemail'])[0]
+        currentuser=user.objects.get(email=request.POST['email'])
         request.session['currentuser']=currentuser
         return redirect('/success')
 def success(request):
-    if 'currentuser' in request.session:
-        return render(request, 'loginregapp/success.html')
+    if "currentuser"  in request.session:
+        info={
+            "user": request.session['currentuser']
+        }
+        return render(request, 'loginregapp/success.html',info)
     else:
         return redirect('/')
+def logout(request):
+    request.session.clear()
+    return redirect('/')
+    
         
 
 
